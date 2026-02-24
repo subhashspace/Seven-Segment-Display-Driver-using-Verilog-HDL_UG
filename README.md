@@ -25,47 +25,78 @@ Capture screenshots of the waveform and save the simulation logs. These will be 
 
 # Verilog Code for Seven-Segment Display
 ```
-// seven_segment_display.v
-module seven_segment_display (
-    input wire [3:0] binary_input,
-    output reg [6:0] seg_output
-);
+`timescale 1ns / 1ps
 
-always @(*) begin
-    case (binary_input)
-        
-        
-        default: seg_output = 7'b0000000; // blank or error
-    endcase
-end
-
+module bcd_to_7_seg(bcd,seg,an);
+    input [3:0] bcd;
+    output reg [6:0] seg;
+    output reg [3:0] an;
+    
+    always @ (*)
+    begin
+        an<=4'b1110;
+        case(bcd)
+            4'b0000: seg = 7'b1000000;
+            4'b0001: seg = 7'b1111001;
+            4'b0010: seg = 7'b0100100;
+            4'b0011: seg = 7'b0110000;
+            4'b0100: seg = 7'b0011001;
+            4'b0101: seg = 7'b0010010;
+            4'b0110: seg = 7'b0000010;
+            4'b0111: seg = 7'b1111000;
+            4'b1000: seg = 7'b0000000;
+            4'b1001: seg = 7'b0010000;
+            4'b1010: seg = 7'b0001000;
+            4'b1011: seg = 7'b0000011;
+            4'b1100: seg = 7'b1000110;
+            4'b1101: seg = 7'b0100001;
+            4'b1110: seg = 7'b0000110;
+            4'b1111: seg = 7'b0001110;
+            default: seg = 7'b1111111;
+        endcase
+    end
 endmodule
+
 ```
 # Testbench for Seven-Segment Display
 ```
-
 `timescale 1ns / 1ps
-module seven_segment_display_tb;
-// Inputs
-reg [3:0] binary_input;
-// Outputs
-wire [6:0] seg_output;
-// Instantiate the Unit Under Test (UUT)
-seven_segment_display uut (
-    .binary_input(binary_input),
-    .seg_output(seg_output)
-);
-// Test procedure
-initial begin
-    // Initialize inputs
-    binary_input = 4'b0000;
 
-end
+module bcd_to_7_seg_tb;
+    
+    reg [3:0] bcd_t;
+    wire [6:0] seg_t;
+    wire [3:0] an_t;
+    
+    bcd_to_7_seg dut (bcd_t,seg_t,an_t);
+    
+    initial
+    begin
+            bcd_t=4'b0000;
+         #100
+            bcd_t=4'b0001;
+         #100
+            bcd_t=4'b0011;
+         #100
+            bcd_t=4'b0110;
+         #100
+            bcd_t=4'b1000;
+         #100
+            bcd_t=4'b1010;
+         #100
+            bcd_t=4'b1011;
+         #100
+            bcd_t=4'b1110;
+         #100 $stop;
+      end
 endmodule
+
 ```
 
 # Simulated Output
-_____ Keep Simulated output ___________
+<img width="1920" height="1200" alt="bcd_to_7_seg" src="https://github.com/user-attachments/assets/dec93629-3518-42f3-81f2-5c7bcfe9f5b8" />
+
+
 
 # Conclusion
 In this experiment, a seven-segment display driver was successfully designed and simulated using Verilog HDL. The simulation results confirmed that the display correctly represented the digits 0 to 9 based on the 4-bit binary input. The testbench effectively verified the functionality of the seven-segment display by applying various input combinations and observing the corresponding segment outputs.
